@@ -1,17 +1,18 @@
-import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import Checkbox from '@material-ui/core/Checkbox';
+import CircularProgress from '@material-ui/core/CircularProgress'
+import Backdrop from '@material-ui/core/Backdrop'
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-// import Box from '@material-ui/core/Box';
-// import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import logo from '../Logo/Logo.svg'
+import validation from './validation';
+import axios from 'axios'
+import './signup.css'
 
 
 
@@ -23,8 +24,11 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
     },
     avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        width: '20%',
+
+
     },
     form: {
         width: '80%', // Fix IE 11 issue.
@@ -41,17 +45,77 @@ const useStyles = makeStyles((theme) => ({
 export default function SignUp() {
     const classes = useStyles();
 
+    const [values, setValues] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        password: '',
+        confirmpassword: ''
+    })
+    const [loading, setLoading] = useState(false)
+
+    const [errors, setErrors] = useState({})
+
+    // Making a controlled component
+    const handleChange = (e) => {
+        setValues({
+            ...values,
+            [e.target.name]: e.target.value
+        })
+
+    }
+
+    // Handle The form submit
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setErrors(validation(values))
+
+            console.log(errors)
+        // Sending request if there is no error
+        if (!errors) {
+            setLoading(true)
+            // setErrors({})
+            const config = {
+                "headers": "application/json"
+            }
+            try {
+                axios.post('http://localhost:5000/user/registeruser', { firstName: values.firstName, lastName: values.lastName, email: values.email, phone: values.phone, password: values.password }, { config }).then((result) => {
+                    if (result.status === 200) {
+                        setLoading(false)
+                        alert("Success")
+                    } else {
+                        setLoading(false)
+                    }
+                })
+            } catch {
+
+            }
+        } else {
+            alert("error")
+        }
+
+    }
+
     return (
         <Container component="main" className={classes.container} maxWidth="xs" >
+            {
+                loading && (<Backdrop
+                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    open={loading}
+                    
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>)
+            }
             <CssBaseline />
             <div className={classes.paper} >
-                <Avatar className={classes.avatar}>
-                    
-                </Avatar>
+                <img src={logo} className={classes.avatar} alt='Logo' />
                 <Typography component="h1" variant="h5">
                     Sign up
                 </Typography>
-                <form className={classes.form} noValidate>
+
+                <form onSubmit={handleSubmit} className={classes.form} noValidate>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                             <TextField
@@ -64,7 +128,10 @@ export default function SignUp() {
                                 InputLabelProps={{ style: { fontSize: 12 } }}
                                 label="First Name"
                                 autoFocus
+                                value={values.firstName}
+                                onChange={handleChange}
                             />
+                            {errors.firstName && <p className='error'>{errors.firstName}</p>}
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
@@ -76,7 +143,10 @@ export default function SignUp() {
                                 label="Last Name"
                                 name="lastName"
                                 autoComplete="lname"
+                                value={values.lastName}
+                                onChange={handleChange}
                             />
+                            {errors.lastName && <p className='error'>{errors.lastName}</p>}
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
@@ -88,7 +158,10 @@ export default function SignUp() {
                                 label="Email Address"
                                 name="email"
                                 autoComplete="email"
+                                value={values.email}
+                                onChange={handleChange}
                             />
+                            {errors.email && <p className='error'>{errors.email}</p>}
                         </Grid>
 
                         <Grid item xs={12}>
@@ -102,7 +175,10 @@ export default function SignUp() {
                                 type="tel"
                                 name="phone"
                                 autoComplete="phone"
+                                value={values.phone}
+                                onChange={handleChange}
                             />
+                            {errors.phone && <p className='error'>{errors.phone}</p>}
                         </Grid>
 
                         <Grid item xs={12}>
@@ -116,7 +192,10 @@ export default function SignUp() {
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
+                                value={values.password}
+                                onChange={handleChange}
                             />
+                            {errors.password && <p className='error'>{errors.password}</p>}
                         </Grid>
 
                         <Grid item xs={12}>
@@ -130,19 +209,24 @@ export default function SignUp() {
                                 type="password"
                                 id="confirmPassword"
                                 autoComplete="current-password"
+                                value={values.confirmpassword}
+                                onChange={handleChange}
                             />
+                            {errors.confirmpassword && <p className='error'>{errors.confirmpassword}</p>}
                         </Grid>
                     </Grid>
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        style={{ backgroundColor: '#00C9B5', color: '#fff' }}
-                        className={classes.submit}
-                    >
-                        Sign Up
-                    </Button>
-                    <Grid container justifyContent="flex-end">
+
+                    <Grid container justifyContent="center">
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            style={{ backgroundColor: '#00C9B5', color: '#fff' }}
+                            className={classes.submit}
+                        >
+                            Sign Up
+                        </Button>
+                    </Grid>
+                    <Grid container justifyContent="center">
                         <Grid item>
                             <Link href="#" variant="body2">
                                 Already have an account? Sign in
