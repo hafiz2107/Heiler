@@ -1,0 +1,17 @@
+.googleButton {
+  width: 250px;
+  background-color: #fff;
+  color: black;
+  box-shadow: none !important;
+  border-radius: 20px;
+
+}
+.googleButton div {
+  /* display: none !important; */
+  border-radius: 20px !important;
+  height: 40px !important;
+}
+.divider {
+    margin: 8% !important;
+
+}

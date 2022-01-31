@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
+import { Alert } from '@material-ui/lab';
+import { Link } from 'react-router-dom'
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -10,6 +11,8 @@ import Container from '@material-ui/core/Container';
 import logo from '../Logo/Logo.svg'
 import validation from './validation';
 import axios from 'axios'
+import GoogleAuth from './GoogleAuth';
+
 // import './signup.css'
 
 
@@ -36,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(3, 0, 2),
     },
     container: {
-        marginTop: theme.spacing(10),
+        marginTop: theme.spacing(25),
     },
 }));
 
@@ -47,7 +50,10 @@ export default function SignUp() {
         email: '',
         password: '',
     })
-
+    const [authError, setAuthError] = useState({
+        password: '',
+        email: ''
+    });
     const [errors, setErrors] = useState({})
 
     const handleChange = (e) => {
@@ -61,21 +67,34 @@ export default function SignUp() {
         e.preventDefault();
         setErrors(validation(values))
 
-        if (!errors) {
+        if (errors) {
             const config = {
                 "headers": "application/json"
             }
             try {
                 axios.post('http://localhost:5000/user/login', { ...values }, { config }).then((result) => {
-                    if (result.status === 200) {
-                        alert("Success")
-                    } else {
-                        alert("Failure")
+                    switch (result.data.message) {
+                        case "Wrong Password":
+                            setAuthError({
+                                ...authError,
+                                password: "Wrong Password"
+                            })
+                            break;
+                        case "No user found":
+                            setAuthError({
+                                ...authError,
+                                email: "Invalid Email"
+                            })
+                            break;
+
+                        default: return;
                     }
                 })
             } catch {
-
+                console.log("the error  !!")
             }
+        } else {
+            alert("hii")
         }
 
     }
@@ -88,8 +107,17 @@ export default function SignUp() {
                 <Typography component="h1" variant="h5">
                     Sign In
                 </Typography>
+                {/* Showing The password Error  */}
+                {authError.password && (<Alert severity="error">
+                    <strong>Password incorrect</strong>
+                </Alert>)}
+                {authError.email && (<Alert severity="error">
+                    <strong>Invalid Email</strong>
+                </Alert>)}
 
                 <form onSubmit={handleSubmit} className={classes.form} noValidate>
+
+
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField
@@ -109,6 +137,7 @@ export default function SignUp() {
 
 
                         <Grid item xs={12}>
+
                             <TextField
                                 variant="standard"
                                 fullWidth
@@ -137,11 +166,10 @@ export default function SignUp() {
                             Sign In
                         </Button>
                     </Grid>
+                    <GoogleAuth />
                     <Grid container justifyContent="center">
                         <Grid item>
-                            <Link href="#" variant="body2">
-                                Don't have an account? Sign Up
-                            </Link>
+                            Don't have an account ? <Link style={{ textDecoration: 'none', color: '#00C9B5', fontWeight: '500' }} to='/signup'>Sign Up</Link>
                         </Grid>
                     </Grid>
                 </form>

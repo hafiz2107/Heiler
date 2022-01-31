@@ -1,5 +1,3 @@
-
-
 const validation = (values) => {
     let errors = {};
 
@@ -21,7 +19,6 @@ const validation = (values) => {
         errors.phone = "Enter a valid Mobile number"
     }
 
-
     if(!values.password){
         errors.password = "Password is required"
     }else if(values.password.length <6 ){
@@ -33,8 +30,6 @@ const validation = (values) => {
     }else if(values.confirmpassword !== values.password){
         errors.confirmpassword = "The passwords must be same"
     }
-
-    console.log("The errors ate : ",errors)
     return errors
 }
 

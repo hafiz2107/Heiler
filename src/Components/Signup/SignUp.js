@@ -1,18 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Backdrop from '@material-ui/core/Backdrop'
-import Link from '@material-ui/core/Link';
+
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import logo from '../Logo/Logo.svg'
 import validation from './validation';
-import axios from 'axios'
 import './signup.css'
+import useForm from './useForm';
+import { Link } from 'react-router-dom';
+
+
 
 
 
@@ -27,8 +30,6 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: 'auto',
         marginRight: 'auto',
         width: '20%',
-
-
     },
     form: {
         width: '80%', // Fix IE 11 issue.
@@ -38,64 +39,14 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(3, 0, 2),
     },
     container: {
-        marginTop: theme.spacing(10),
+        marginTop: theme.spacing(20),
     },
 }));
 
 export default function SignUp() {
     const classes = useStyles();
 
-    const [values, setValues] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        password: '',
-        confirmpassword: ''
-    })
-    const [loading, setLoading] = useState(false)
-
-    const [errors, setErrors] = useState({})
-
-    // Making a controlled component
-    const handleChange = (e) => {
-        setValues({
-            ...values,
-            [e.target.name]: e.target.value
-        })
-
-    }
-
-    // Handle The form submit
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setErrors(validation(values))
-
-            console.log(errors)
-        // Sending request if there is no error
-        if (!errors) {
-            setLoading(true)
-            // setErrors({})
-            const config = {
-                "headers": "application/json"
-            }
-            try {
-                axios.post('http://localhost:5000/user/registeruser', { firstName: values.firstName, lastName: values.lastName, email: values.email, phone: values.phone, password: values.password }, { config }).then((result) => {
-                    if (result.status === 200) {
-                        setLoading(false)
-                        alert("Success")
-                    } else {
-                        setLoading(false)
-                    }
-                })
-            } catch {
-
-            }
-        } else {
-            alert("error")
-        }
-
-    }
+    const { handleChange, values, handleSubmit, errors, loading } = useForm(validation)
 
     return (
         <Container component="main" className={classes.container} maxWidth="xs" >
@@ -103,7 +54,7 @@ export default function SignUp() {
                 loading && (<Backdrop
                     sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                     open={loading}
-                    
+
                 >
                     <CircularProgress color="inherit" />
                 </Backdrop>)
@@ -228,9 +179,7 @@ export default function SignUp() {
                     </Grid>
                     <Grid container justifyContent="center">
                         <Grid item>
-                            <Link href="#" variant="body2">
-                                Already have an account? Sign in
-                            </Link>
+                            Already have an account ?<Link style={{ textDecoration: 'none', color: '#00C9B5', fontWeight: '500' }} to='/'> Sign in</Link>
                         </Grid>
                     </Grid>
                 </form>
