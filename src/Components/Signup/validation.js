@@ -1,36 +1,69 @@
-const validation = (values) => {
+import axios from "axios";
+
+const validation = async (values) => {
     let errors = {};
+    let valid = true;
 
-    if(!values.firstName){
-        errors.firstName = "First Name is required"
+
+    const checkEmailAlreadyExist = () => {
+        return new Promise((resolve, reject) => {
+            try {
+                const config = {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+                axios.post('http://localhost:5000/user/checkemail', { email: values.email }, { config }).then((result) => {
+                    if (result.status === 204) {
+                        resolve(true)
+                    } else {
+                        reject(false)
+                    }
+                })
+            } catch (err) {
+                console.log("There are errors in email checking", err)
+            }
+        })
     }
-    if(!values.lastName){
-        errors.lastName = "Last Name is required"
+
+    await checkEmailAlreadyExist().then((result) => {
+        errors.emailAlreadyExits = "Email Already exists"
+        valid = false
+    }).catch((noError) => {
+        valid = true
+    })
+
+    
+    if (!values.username) {
+        errors.username = "User Name is required";
+        valid = false
     }
-    if(!values.email){
+
+    if (!values.email) {
         errors.email = "Email is required"
-    }else if(!/^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(values.email)){
+        valid = false
+    } else if (!/^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(values.email)) {
         errors.email = "Please Enter a valid email"
+        valid = false
     }
 
-    if(!values.phone){
-        errors.phone="Phone Number is required"
-    }else if(values.phone.length >10 || values.phone.length <10){
-        errors.phone = "Enter a valid Mobile number"
-    }
-
-    if(!values.password){
+    if (!values.password) {
         errors.password = "Password is required"
-    }else if(values.password.length <6 ){
+        valid = false
+    } else if (values.password.length < 6) {
         errors.password = "Please enter atleast 6 characters"
+        valid = false
     }
 
-    if(!values.confirmpassword){
+    if (!values.confirmpassword) {
         errors.confirmpassword = "Password Confirmation is required"
-    }else if(values.confirmpassword !== values.password){
+        valid = false
+    } else if (values.confirmpassword !== values.password) {
         errors.confirmpassword = "The passwords must be same"
+        valid = false
     }
-    return errors
+    
+    return { errors, valid }
 }
 
 export default validation

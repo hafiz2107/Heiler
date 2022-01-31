@@ -4,20 +4,15 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Backdrop from '@material-ui/core/Backdrop'
-
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import logo from '../Logo/Logo.svg'
-import validation from './validation';
 import './signup.css'
 import useForm from './useForm';
 import { Link } from 'react-router-dom';
-
-
-
-
+import validation from './validation';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -59,6 +54,7 @@ export default function SignUp() {
                     <CircularProgress color="inherit" />
                 </Backdrop>)
             }
+
             <CssBaseline />
             <div className={classes.paper} >
                 <img src={logo} className={classes.avatar} alt='Logo' />
@@ -68,37 +64,24 @@ export default function SignUp() {
 
                 <form onSubmit={handleSubmit} className={classes.form} noValidate>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12}>
                             <TextField
                                 autoComplete="fname"
-                                name="firstName"
+                                name="username"
                                 variant="standard"
                                 fullWidth
-                                id="firstName"
+                                id="username"
                                 inputProps={{ style: { fontSize: 12 } }}
                                 InputLabelProps={{ style: { fontSize: 12 } }}
-                                label="First Name"
+                                label="User Name"
                                 autoFocus
-                                value={values.firstName}
+                                value={values.username}
                                 onChange={handleChange}
                             />
-                            {errors.firstName && <p className='error'>{errors.firstName}</p>}
+
+                            {errors.username && <p className='error'>{errors.username}</p>}
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                variant="standard"
-                                fullWidth
-                                id="lastName"
-                                inputProps={{ style: { fontSize: 12 } }}
-                                InputLabelProps={{ style: { fontSize: 12 } }}
-                                label="Last Name"
-                                name="lastName"
-                                autoComplete="lname"
-                                value={values.lastName}
-                                onChange={handleChange}
-                            />
-                            {errors.lastName && <p className='error'>{errors.lastName}</p>}
-                        </Grid>
+
                         <Grid item xs={12}>
                             <TextField
                                 variant="standard"
@@ -113,24 +96,10 @@ export default function SignUp() {
                                 onChange={handleChange}
                             />
                             {errors.email && <p className='error'>{errors.email}</p>}
+                            {errors.emailAlreadyExits && <p className='error'>{errors.emailAlreadyExits}</p>}
                         </Grid>
 
-                        <Grid item xs={12}>
-                            <TextField
-                                variant="standard"
-                                fullWidth
-                                id="phone"
-                                inputProps={{ style: { fontSize: 12 } }}
-                                InputLabelProps={{ style: { fontSize: 12 } }}
-                                label="Phone Number"
-                                type="tel"
-                                name="phone"
-                                autoComplete="phone"
-                                value={values.phone}
-                                onChange={handleChange}
-                            />
-                            {errors.phone && <p className='error'>{errors.phone}</p>}
-                        </Grid>
+
 
                         <Grid item xs={12}>
                             <TextField

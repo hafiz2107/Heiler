@@ -13,9 +13,6 @@ import validation from './validation';
 import axios from 'axios'
 import GoogleAuth from './GoogleAuth';
 
-// import './signup.css'
-
-
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -43,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function SignUp() {
+export default function Login() {
     const classes = useStyles();
 
     const [values, setValues] = useState({
@@ -54,6 +51,8 @@ export default function SignUp() {
         password: '',
         email: ''
     });
+
+
     const [errors, setErrors] = useState({})
 
     const handleChange = (e) => {
@@ -65,9 +64,12 @@ export default function SignUp() {
     }
     const handleSubmit = (e) => {
         e.preventDefault();
-        setErrors(validation(values))
 
-        if (errors) {
+        const {errors , valid} = validation(values)
+
+        setErrors(errors)
+
+        if (valid) {
             const config = {
                 "headers": "application/json"
             }
@@ -93,9 +95,7 @@ export default function SignUp() {
             } catch {
                 console.log("the error  !!")
             }
-        } else {
-            alert("hii")
-        }
+        } 
 
     }
 

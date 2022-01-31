@@ -1,20 +1,17 @@
 import axios from 'axios'
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
 const useForm = (validate) => {
 
-
     const [values, setValues] = useState({
-        firstName: '',
-        lastName: '',
+        username: '',
         email: '',
         phone: '',
         password: '',
         confirmpassword: ''
     })
 
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
 
     const [errors, setErrors] = useState({})
     const [loading, setLoading] = useState(false)
@@ -30,16 +27,18 @@ const useForm = (validate) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        setErrors(validate(values))
-        // Sending request if there is no error
-        if (!errors) {
-            setLoading(true)
+        const { errors, valid } = await validate(values)
 
+        setErrors(errors)
+        // Sending request if there is no error
+
+        if (valid) {
+            setLoading(true)
             const config = {
                 "headers": "application/json"
             }
             try {
-                axios.post('http://localhost:5000/user/registeruser', { firstName: values.firstName, lastName: values.lastName, email: values.email, phone: values.phone, password: values.password }, { config }).then((result) => {
+                axios.post('http://localhost:5000/user/registeruser', { username: values.username, email: values.email, password: values.password }, { config }).then((result) => {
                     if (result.status === 200) {
                         setLoading(false)
                         alert("Success")
@@ -51,9 +50,7 @@ const useForm = (validate) => {
             } catch {
 
             }
-        } else {
-            alert("error")
-        }
+        } 
 
     }
 

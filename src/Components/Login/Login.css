@@ -1,10 +1,10 @@
 .googleButton {
-  width: 250px;
+  
   background-color: #fff;
-  color: black;
+  color: black !important;
   box-shadow: none !important;
   border-radius: 20px;
-
+    margin-bottom: 8%;
 }
 .googleButton div {
   /* display: none !important; */
@@ -13,5 +13,4 @@
 }
 .divider {
     margin: 8% !important;
-
 }

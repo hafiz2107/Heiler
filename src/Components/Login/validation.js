@@ -1,28 +1,34 @@
 
 
 const validation = (values) => {
-    let errors = {};
+    let errors = {}, valid = true;
 
 
-    if(!values.email){
+    if (!values.email) {
         errors.email = "Email is required"
-    }else if(!/^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(values.email)){
+        valid = false
+    } else if (!/^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(values.email)) {
         errors.email = "Please Enter a valid email"
+        valid = false
     }
 
-    if(!values.phone){
-        errors.phone="Phone Number is required"
-    }else if(values.phone.length >10 || values.phone.length <10){
+    if (!values.phone) {
+        errors.phone = "Phone Number is required"
+        valid = false
+    } else if (values.phone.length > 10 || values.phone.length < 10) {
         errors.phone = "Enter a valid Mobile number"
+        valid = false
     }
 
 
-    if(!values.password){
+    if (!values.password) {
         errors.password = "Password is required"
-    }else if(values.password.length <6 ){
+        valid = false
+    } else if (values.password.length < 6) {
         errors.password = "Please enter atleast 6 characters"
+        valid = false
     }
-    return errors
+    return { errors, valid }
 }
 
 export default validation
