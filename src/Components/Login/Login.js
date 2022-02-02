@@ -12,6 +12,7 @@ import logo from '../Logo/Logo.svg'
 import validation from './validation';
 import axios from 'axios'
 import GoogleAuth from './GoogleAuth';
+import { Loading } from 'react-loading-dot/lib';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -47,13 +48,16 @@ export default function Login() {
         email: '',
         password: '',
     })
+
+    // Errors send from backend 
+    // Wrong password or email error
     const [authError, setAuthError] = useState({
         password: '',
         email: ''
     });
-
-
+    // State to manage the validation
     const [errors, setErrors] = useState({})
+    const [loading, setLoading] = useState(false)
 
     const handleChange = (e) => {
         setValues({
@@ -65,8 +69,8 @@ export default function Login() {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const {errors , valid} = validation(values)
-
+        const { errors, valid } = validation(values)
+        console.log("The valid is : ", valid);
         setErrors(errors)
 
         if (valid) {
@@ -74,19 +78,27 @@ export default function Login() {
                 "headers": "application/json"
             }
             try {
+                setLoading(true)
                 axios.post('http://localhost:5000/user/login', { ...values }, { config }).then((result) => {
                     switch (result.data.message) {
                         case "Wrong Password":
+                            // setLoading(false)
                             setAuthError({
                                 ...authError,
                                 password: "Wrong Password"
                             })
                             break;
                         case "No user found":
+                            // setLoading(false)
                             setAuthError({
                                 ...authError,
                                 email: "Invalid Email"
                             })
+                            break;
+
+                        // Success Case
+                        case "Auth successfull":
+
                             break;
 
                         default: return;
@@ -95,7 +107,9 @@ export default function Login() {
             } catch {
                 console.log("the error  !!")
             }
-        } 
+        } else {
+            alert("else")
+        }
 
     }
 
@@ -157,14 +171,18 @@ export default function Login() {
                     </Grid>
 
                     <Grid container justifyContent="center">
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            style={{ backgroundColor: '#00C9B5', color: '#fff' }}
-                            className={classes.submit}
-                        >
-                            Sign In
-                        </Button>
+                        {
+                            loading ?
+                                <Loading dots={4} background='#389df5' margin='0.5rem' /> :
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    style={{ backgroundColor: '#00C9B5', color: '#fff' }}
+                                    className={classes.submit}
+                                >
+                                    Sign In
+                                </Button>
+                        }
                     </Grid>
                     <GoogleAuth />
                     <Grid container justifyContent="center">

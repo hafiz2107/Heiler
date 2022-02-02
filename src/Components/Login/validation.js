@@ -12,15 +12,6 @@ const validation = (values) => {
         valid = false
     }
 
-    if (!values.phone) {
-        errors.phone = "Phone Number is required"
-        valid = false
-    } else if (values.phone.length > 10 || values.phone.length < 10) {
-        errors.phone = "Enter a valid Mobile number"
-        valid = false
-    }
-
-
     if (!values.password) {
         errors.password = "Password is required"
         valid = false
