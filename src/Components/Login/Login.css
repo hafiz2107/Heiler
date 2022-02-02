@@ -17,11 +17,4 @@
 .loginParent {
   margin-top: 10% !important;
 }
-.loginBack {
-  background: url(http://qexal.react.themesbrand.com/static/media/auth-bg.f79ba80d.png) !important;
-  background-size: cover !important;
-  background-repeat: no-repeat !important;
-  margin-top: 0px;
-  top: 0%;
-  background-position: 50% !important;
-}
+

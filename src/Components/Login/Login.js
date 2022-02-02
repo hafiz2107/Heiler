@@ -26,8 +26,6 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: 'auto',
         marginRight: 'auto',
         width: '20%',
-
-
     },
     form: {
         width: '80%', // Fix IE 11 issue.
@@ -39,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
     container: {
         marginTop: theme.spacing(25),
     },
+
 }));
 
 export default function Login() {
@@ -82,30 +81,30 @@ export default function Login() {
                 axios.post('http://localhost:5000/user/login', { ...values }, { config }).then((result) => {
                     switch (result.data.message) {
                         case "Wrong Password":
-                            // setLoading(false)
+                            setLoading(false)
                             setAuthError({
                                 ...authError,
                                 password: "Wrong Password"
                             })
                             break;
                         case "No user found":
-                            // setLoading(false)
+                            setLoading(false)
                             setAuthError({
                                 ...authError,
                                 email: "Invalid Email"
                             })
                             break;
-
                         // Success Case
                         case "Auth successfull":
+                            setLoading(false)
                             console.log("Redirecting to HOME page");
                             break;
 
                         default: return;
                     }
                 })
-            } catch {
-                console.log("the error  !!")
+            } catch (err) {
+                console.log("the error  !!", err)
             }
         } else {
             alert("else")
@@ -114,87 +113,86 @@ export default function Login() {
     }
 
     return (
-        <div className='loginBack'>
-            <Container component="main" className="loginParent" maxWidth="xs" >
-                <CssBaseline />
-                <div className={classes.paper} >
-                    <img src={logo} className={classes.avatar} alt='Logo' />
-                    <Typography component="h1" variant="h5">
-                        Sign In
-                    </Typography>
-                    {/* Showing The password Error  */}
-                    {authError.password && (<Alert severity="error">
-                        <strong>Password incorrect</strong>
-                    </Alert>)}
-                    {authError.email && (<Alert severity="error">
-                        <strong>Invalid Email</strong>
-                    </Alert>)}
+        <Container component="main" className={classes.container} maxWidth="xs" >
+            <CssBaseline />
+            <div className={classes.paper} >
+                <img src={logo} className={classes.avatar} alt='Logo' />
+                <Typography component="h1" variant="h5">
+                    Sign In
+                </Typography>
+                {/* Showing The password Error  */}
+                {authError.password && (<Alert severity="error">
+                    <strong>Password incorrect</strong>
+                </Alert>)}
+                {authError.email && (<Alert severity="error">
+                    <strong>Invalid Email</strong>
+                </Alert>)}
 
-                    <form onSubmit={handleSubmit} className={classes.form} noValidate>
-
-
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    variant="standard"
-                                    fullWidth
-                                    id="email"
-                                    inputProps={{ style: { fontSize: 12 } }}
-                                    InputLabelProps={{ style: { fontSize: 12 } }}
-                                    label="Email Address"
-                                    name="email"
-                                    autoComplete="email"
-                                    value={values.email}
-                                    onChange={handleChange}
-                                />
-                                {errors.email && <p className='error'>{errors.email}</p>}
-                            </Grid>
+                <form onSubmit={handleSubmit} className={classes.form} noValidate>
 
 
-                            <Grid item xs={12}>
-
-                                <TextField
-                                    variant="standard"
-                                    fullWidth
-                                    inputProps={{ style: { fontSize: 12 } }}
-                                    InputLabelProps={{ style: { fontSize: 12 } }}
-                                    name="password"
-                                    label="Password"
-                                    type="password"
-                                    id="password"
-                                    autoComplete="current-password"
-                                    value={values.password}
-                                    onChange={handleChange}
-                                />
-                                {errors.password && <p className='error'>{errors.password}</p>}
-                            </Grid>
-
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <TextField
+                                variant="standard"
+                                fullWidth
+                                id="email"
+                                inputProps={{ style: { fontSize: 12 } }}
+                                InputLabelProps={{ style: { fontSize: 12 } }}
+                                label="Email Address"
+                                name="email"
+                                autoComplete="email"
+                                value={values.email}
+                                onChange={handleChange}
+                            />
+                            {errors.email && <p className='error'>{errors.email}</p>}
                         </Grid>
 
-                        <Grid container justifyContent="center">
-                            {
-                                loading ?
-                                    <Loading dots={4} background='#389df5' margin='0.5rem' /> :
-                                    <Button
-                                        type="submit"
-                                        variant="contained"
-                                        style={{ backgroundColor: '#00C9B5', color: '#fff' }}
-                                        className={classes.submit}
-                                    >
-                                        Sign In
-                                    </Button>
-                            }
-                        </Grid>
-                        <GoogleAuth />
-                        <Grid container justifyContent="center">
-                            <Grid item>
-                                Don't have an account ? <Link style={{ textDecoration: 'none', color: '#00C9B5', fontWeight: '500' }} to='/signup'>Sign Up</Link>
-                            </Grid>
-                        </Grid>
-                    </form>
-                </div>
 
-            </Container>
-        </div>
+                        <Grid item xs={12}>
+
+                            <TextField
+                                variant="standard"
+                                fullWidth
+                                inputProps={{ style: { fontSize: 12 } }}
+                                InputLabelProps={{ style: { fontSize: 12 } }}
+                                name="password"
+                                label="Password"
+                                type="password"
+                                id="password"
+                                autoComplete="current-password"
+                                value={values.password}
+                                onChange={handleChange}
+                            />
+                            {errors.password && <p className='error'>{errors.password}</p>}
+                        </Grid>
+
+                    </Grid>
+
+                    <Grid container justifyContent="center">
+                        {
+                            loading ?
+                                <Loading dots={4} background='#389df5' margin='0.5rem' /> :
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    style={{ backgroundColor: '#00C9B5', color: '#fff' }}
+                                    className={classes.submit}
+                                >
+                                    Sign In
+                                </Button>
+                        }
+
+                    </Grid>
+                    <GoogleAuth />
+                    <Grid container justifyContent="center">
+                        <Grid item>
+                            Don't have an account ? <Link style={{ textDecoration: 'none', color: '#00C9B5', fontWeight: '500' }} to='/signup'>Sign Up</Link>
+                        </Grid>
+                    </Grid>
+                </form>
+            </div>
+
+        </Container>
     );
 }
