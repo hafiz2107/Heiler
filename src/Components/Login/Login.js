@@ -70,7 +70,7 @@ export default function Login() {
         e.preventDefault();
 
         const { errors, valid } = validation(values)
-        console.log("The valid is : ", valid);
+
         setErrors(errors)
 
         if (valid) {
@@ -98,7 +98,7 @@ export default function Login() {
 
                         // Success Case
                         case "Auth successfull":
-
+                            console.log("Redirecting to HOME page");
                             break;
 
                         default: return;
@@ -114,85 +114,87 @@ export default function Login() {
     }
 
     return (
-        <Container component="main" className={classes.container} maxWidth="xs" >
-            <CssBaseline />
-            <div className={classes.paper} >
-                <img src={logo} className={classes.avatar} alt='Logo' />
-                <Typography component="h1" variant="h5">
-                    Sign In
-                </Typography>
-                {/* Showing The password Error  */}
-                {authError.password && (<Alert severity="error">
-                    <strong>Password incorrect</strong>
-                </Alert>)}
-                {authError.email && (<Alert severity="error">
-                    <strong>Invalid Email</strong>
-                </Alert>)}
+        <div className='loginBack'>
+            <Container component="main" className="loginParent" maxWidth="xs" >
+                <CssBaseline />
+                <div className={classes.paper} >
+                    <img src={logo} className={classes.avatar} alt='Logo' />
+                    <Typography component="h1" variant="h5">
+                        Sign In
+                    </Typography>
+                    {/* Showing The password Error  */}
+                    {authError.password && (<Alert severity="error">
+                        <strong>Password incorrect</strong>
+                    </Alert>)}
+                    {authError.email && (<Alert severity="error">
+                        <strong>Invalid Email</strong>
+                    </Alert>)}
 
-                <form onSubmit={handleSubmit} className={classes.form} noValidate>
+                    <form onSubmit={handleSubmit} className={classes.form} noValidate>
 
 
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <TextField
-                                variant="standard"
-                                fullWidth
-                                id="email"
-                                inputProps={{ style: { fontSize: 12 } }}
-                                InputLabelProps={{ style: { fontSize: 12 } }}
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
-                                value={values.email}
-                                onChange={handleChange}
-                            />
-                            {errors.email && <p className='error'>{errors.email}</p>}
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    variant="standard"
+                                    fullWidth
+                                    id="email"
+                                    inputProps={{ style: { fontSize: 12 } }}
+                                    InputLabelProps={{ style: { fontSize: 12 } }}
+                                    label="Email Address"
+                                    name="email"
+                                    autoComplete="email"
+                                    value={values.email}
+                                    onChange={handleChange}
+                                />
+                                {errors.email && <p className='error'>{errors.email}</p>}
+                            </Grid>
+
+
+                            <Grid item xs={12}>
+
+                                <TextField
+                                    variant="standard"
+                                    fullWidth
+                                    inputProps={{ style: { fontSize: 12 } }}
+                                    InputLabelProps={{ style: { fontSize: 12 } }}
+                                    name="password"
+                                    label="Password"
+                                    type="password"
+                                    id="password"
+                                    autoComplete="current-password"
+                                    value={values.password}
+                                    onChange={handleChange}
+                                />
+                                {errors.password && <p className='error'>{errors.password}</p>}
+                            </Grid>
+
                         </Grid>
 
-
-                        <Grid item xs={12}>
-
-                            <TextField
-                                variant="standard"
-                                fullWidth
-                                inputProps={{ style: { fontSize: 12 } }}
-                                InputLabelProps={{ style: { fontSize: 12 } }}
-                                name="password"
-                                label="Password"
-                                type="password"
-                                id="password"
-                                autoComplete="current-password"
-                                value={values.password}
-                                onChange={handleChange}
-                            />
-                            {errors.password && <p className='error'>{errors.password}</p>}
+                        <Grid container justifyContent="center">
+                            {
+                                loading ?
+                                    <Loading dots={4} background='#389df5' margin='0.5rem' /> :
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        style={{ backgroundColor: '#00C9B5', color: '#fff' }}
+                                        className={classes.submit}
+                                    >
+                                        Sign In
+                                    </Button>
+                            }
                         </Grid>
-
-                    </Grid>
-
-                    <Grid container justifyContent="center">
-                        {
-                            loading ?
-                                <Loading dots={4} background='#389df5' margin='0.5rem' /> :
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    style={{ backgroundColor: '#00C9B5', color: '#fff' }}
-                                    className={classes.submit}
-                                >
-                                    Sign In
-                                </Button>
-                        }
-                    </Grid>
-                    <GoogleAuth />
-                    <Grid container justifyContent="center">
-                        <Grid item>
-                            Don't have an account ? <Link style={{ textDecoration: 'none', color: '#00C9B5', fontWeight: '500' }} to='/signup'>Sign Up</Link>
+                        <GoogleAuth />
+                        <Grid container justifyContent="center">
+                            <Grid item>
+                                Don't have an account ? <Link style={{ textDecoration: 'none', color: '#00C9B5', fontWeight: '500' }} to='/signup'>Sign Up</Link>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </form>
-            </div>
+                    </form>
+                </div>
 
-        </Container>
+            </Container>
+        </div>
     );
 }

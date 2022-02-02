@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom'
 import OTPInput from "otp-input-react";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
@@ -11,6 +12,8 @@ import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { SendRounded } from "@material-ui/icons"
 import LoadingButton from '@mui/lab/LoadingButton'
+// import { Alert } from '@material-ui/lab';
+import {Alert} from '@material-ui/lab/'
 import './SignUpOtp.css'
 import { useTimer } from 'react-timer-hook';
 import axios from "axios";
@@ -44,7 +47,7 @@ export default function SignUpOtp() {
     const [OTP, setOTP] = useState("");
     const [otpError, setOtpError] = useState("")
     const [loading, setLoading] = useState(false)
-
+    const navigate = useNavigate();
     const {
         seconds,
         start,
@@ -73,6 +76,8 @@ export default function SignUpOtp() {
         const time = new Date();
         time.setSeconds(time.getSeconds() + 30);
         restart(time)
+
+        // Send Request to resend OTP
     };
     // setLoading(true)
 
@@ -89,9 +94,10 @@ export default function SignUpOtp() {
             }
             axios.post('http://localhost:5000/user/verifyotp', { userId, inputOtp: OTP }, { config }).then((response) => {
                 if (response.status === 200) {
-                    // useNavigate('/userhome');
-                    console.log("Redirected To User Home")
-                } else {
+                    localStorage.removeItem("InsertedUser")
+                    navigate('/')
+                }
+                if (response.status === 201) {
                     setOtpError("Invalid OTP")
                 }
             })
@@ -137,9 +143,13 @@ export default function SignUpOtp() {
                             </Typography>
                         </Paper>
                     </Grid>
-                    {otpError && <Grid>
-                        <p>{otpError}</p>
-                    </Grid>}
+                    {otpError &&
+                        <Grid>
+                            <Alert severity="error">
+                                <strong>{otpError}</strong>
+                            </Alert>
+                        </Grid>
+                    }
                     <Grid item xs={12} container justify="center" alignItems="center" direction="column" >
                         <Grid item container spacing={3} justify="center">
                             <OTPInput className="otpInput" value={OTP} onChange={setOTP} autoFocus OTPLength={4} otpType="number" disabled={false} />

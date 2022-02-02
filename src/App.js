@@ -9,6 +9,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+
         <Route path='/' element={<LoginScreen />} />
         <Route path="/signup" element={<Signup />} />
         <Route path='/otp' element={<OtpInput />} />

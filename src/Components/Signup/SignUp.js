@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SignUp() {
     const classes = useStyles();
 
-    const { handleChange, values, handleSubmit, errors, loading ,emailError} = useForm(validation)
+    const { handleChange, values, handleSubmit, errors, loading, emailError } = useForm(validation)
 
     return (
         <Container component="main" className={classes.container} maxWidth="xs" >
@@ -52,7 +52,7 @@ export default function SignUp() {
                 <Typography component="h1" variant="h5">
                     Sign up
                 </Typography>
-            {emailError && <p>{emailError}</p>}
+                {emailError && <p style={{ color: "red" }}>{emailError}</p>}
                 <form onSubmit={handleSubmit} className={classes.form} noValidate>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
