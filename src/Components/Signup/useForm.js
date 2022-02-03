@@ -43,6 +43,7 @@ const useForm = (validate) => {
                     if (result.status === 200) {
                         setLoading(false)
                         // Redirecting to the OTP Page if Success 
+                        localStorage.setItem("UserDetails",JSON.stringify(values))
                         localStorage.setItem("InsertedUser", JSON.stringify(result.data))
                         navigate('/otp')
                     } else if (result.status === 201) {
