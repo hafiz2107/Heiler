@@ -1,20 +1,23 @@
 
-import './App.css';
-import Signup from './Screen/Signup/Signup';
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import LoginScreen from './Screen/Login/Login';
-import OtpInput from './Screen/OtpScreen/OtpInput';
+import { Provider } from 'react-redux'
+import Signup from './Screen/User/Signup/Signup';
+import LoginScreen from './Screen/User/Login/Login';
+import OtpInput from './Screen/User/OtpScreen/OtpInput';
+import Store from './Redux/Store';
+import './App.css';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-
-        <Route path='/' element={<LoginScreen />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path='/otp' element={<OtpInput />} />
-      </Routes>
-    </BrowserRouter>
+    <Provider store={Store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<LoginScreen person='user'/>} />
+          <Route path="/signup" element={<Signup person='user'/>} />
+          <Route path='/otp' element={<OtpInput person='user'/>} />
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   );
 }
 

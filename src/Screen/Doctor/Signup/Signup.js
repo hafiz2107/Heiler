@@ -1,9 +1,9 @@
 import React from 'react';
-import SignUp from '../../Components/Signup/SignUp';
+import SignUp from '../../../Components/Signup/SignUp';
 
 const Signup = () => {
   return (
-      <SignUp />
+      <SignUp person='doctor'/>
   )
 };
 

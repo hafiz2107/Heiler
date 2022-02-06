@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
     const classes = useStyles();
-
+    
 
     const { handleChange, values, handleSubmit, errors, loading, emailError } = useForm(validation)
 
@@ -75,6 +75,7 @@ export default function SignUp() {
                                         autoFocus
                                         value={values.username}
                                         onChange={handleChange}
+                                        
                                     />
 
                                     {errors.username && <p className='error'>{errors.username}</p>}

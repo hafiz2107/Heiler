@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit'
-import userToAuthenticateReducer from './LoggedInUser/userToAuthenticate'
+import googleAuthErrorReducer from './GoogleAuthError/GoogleAuthErrorSlice'
 
 export default configureStore({
     reducer: {
-        userToAuthenticate: userToAuthenticateReducer,
+        googleAuthError: googleAuthErrorReducer,
     }
 })

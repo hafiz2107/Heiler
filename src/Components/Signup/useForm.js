@@ -1,9 +1,10 @@
-import axios from 'axios'
+
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { userSignUp } from '../../Services/user.service'
 
 const useForm = (validate) => {
-    const navigate = useNavigate();
+    const navigate = useNavigate()
     const [values, setValues] = useState({
         username: '',
         email: '',
@@ -12,10 +13,10 @@ const useForm = (validate) => {
         confirmpassword: ''
     })
 
-    
+
     const [errors, setErrors] = useState({})
     const [loading, setLoading] = useState(false)
-    const [emailError , setEmailError] = useState("")
+    const [emailError, setEmailError] = useState("")
 
     // Making a controlled component
     const handleChange = (e) => {
@@ -35,33 +36,26 @@ const useForm = (validate) => {
 
         if (valid) {
             setLoading(true)
-            const config = {
-                "headers": "application/json"
-            }
+           
             try {
-                axios.post('http://localhost:5000/user/sendOtp', { username: values.username, email: values.email, password: values.password }, { config }).then((result) => {
-                    if (result.status === 200) {
-                        setLoading(false)
-                        // Redirecting to the OTP Page if Success 
-                        localStorage.setItem("UserDetails",JSON.stringify(values))
-                        localStorage.setItem("InsertedUser", JSON.stringify(result.data))
-                        navigate('/otp')
-                    } else if (result.status === 201) {
-                        setLoading(false)
-                        setEmailError(result.data.message)
-                    } else {
-                        setLoading(false)
-                        // Showing an OTP send error if failed
-                    }
+                userSignUp(values).then((result) => {
+                    setLoading(false)
+                    // Redirecting to the OTP Page if Success 
+                    localStorage.setItem("UserDetails", JSON.stringify(values))
+                    localStorage.setItem("InsertedUser", JSON.stringify(result.data))
+                    navigate('/otp')
+                }).catch((result) => {
+                    setLoading(false)
+                    setEmailError(result.data.message)
                 })
-            } catch {
-
+            } catch (err){
+                console.log("the error in signup is : ",err)
             }
         }
 
     }
 
-    return { handleChange, values, handleSubmit, errors, loading ,emailError}
+    return { handleChange, values, handleSubmit, errors, loading, emailError }
 }
 
 export default useForm

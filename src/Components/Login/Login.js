@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -8,13 +8,12 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import logo from '../Logo/Logo.svg'
-import validation from './validation';
-import axios from 'axios'
-import GoogleAuth from './GoogleAuth';
 import { Loading } from 'react-loading-dot/lib';
-import themeImage from '../Logo/undraw_wishes_icyp 1.svg'
 
+import GoogleAuth from './GoogleAuth';
+import logo from '../Logo/Logo.svg'
+import themeImage from '../Logo/undraw_wishes_icyp 1.svg'
+import useForm from './userForm';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -39,85 +38,20 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function Login() {
+export default function Login({ person }) {
+    const { values, googleAuthError, authError, errors, loading, handleChange, handleSubmit } = useForm()
+
+    console.log("The person is : ",person)
     const classes = useStyles();
-
-    const [values, setValues] = useState({
-        email: '',
-        password: '',
-    })
-
-    // Errors send from backend 
-    // Wrong password or email error
-    const [authError, setAuthError] = useState({
-        password: '',
-        email: ''
-    });
-    // State to manage the validation
-    const [errors, setErrors] = useState({})
-    const [loading, setLoading] = useState(false)
-
-    const handleChange = (e) => {
-        setValues({
-            ...values,
-            [e.target.name]: e.target.value
-        })
-
-    }
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        const { errors, valid } = validation(values)
-
-        setErrors(errors)
-
-        if (valid) {
-            const config = {
-                "headers": "application/json"
-            }
-            try {
-                setLoading(true)
-                axios.post('http://localhost:5000/user/login', { ...values }, { config }).then((result) => {
-                    switch (result.data.message) {
-                        case "Wrong Password":
-                            setLoading(false)
-                            setAuthError({
-                                ...authError,
-                                password: "Wrong Password"
-                            })
-                            break;
-                        case "No user found":
-                            setLoading(false)
-                            setAuthError({
-                                ...authError,
-                                email: "Invalid Email"
-                            })
-                            break;
-                        // Success Case
-                        case "Auth successfull":
-                            setLoading(false)
-                            console.log("Redirecting to HOME page");
-                            break;
-
-                        default: return;
-                    }
-                })
-            } catch (err) {
-                console.log("the error  !!", err)
-            }
-        } else {
-            alert("else")
-        }
-
-    }
 
     return (
         <Container className="container" maxWidth='lg' >
             <Grid container spacing={5}>
+
                 <Grid item xs={12} md={6} sm={6} className='firstGrid'>
                     <img className='themeImage' src={themeImage} alt='' />
                 </Grid>
-                
+
                 <Grid item xs={12} md={6} sm={6} className='secondGrid'>
                     <CssBaseline />
                     <div className={classes.paper} >
@@ -125,17 +59,22 @@ export default function Login() {
                         <Typography component="h1" variant="h5">
                             Sign In
                         </Typography>
+
                         {/* Showing The password Error  */}
+
                         {authError.password && (<Alert severity="error">
                             <strong>Password incorrect</strong>
                         </Alert>)}
+
                         {authError.email && (<Alert severity="error">
                             <strong>Invalid Email</strong>
                         </Alert>)}
 
-                        <form onSubmit={handleSubmit} className={classes.form} noValidate>
+                        {googleAuthError && (<Alert severity="error">
+                            <strong>{googleAuthError}</strong>
+                        </Alert>)}
 
-
+                        <form onSubmit={handleSubmit} className={classes.form} >
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <TextField
@@ -149,6 +88,8 @@ export default function Login() {
                                         autoComplete="email"
                                         value={values.email}
                                         onChange={handleChange}
+                                        error={authError.email || errors.email ? true : false}
+
                                     />
                                     {errors.email && <p className='error'>{errors.email}</p>}
                                 </Grid>
@@ -159,12 +100,7 @@ export default function Login() {
                                         variant="outlined"
                                         fullWidth
                                         inputProps={{ style: { fontSize: 12 } }}
-                                        InputLabelProps={{ style: { fontSize: 12 } }}
-                                        InputProps={{
-                                            classes: {
-                                                notchedOutline: classes.notchedOutline
-                                            }
-                                        }}
+                                        InputLabelProps={{ style: { fontSize: 13 } }}
                                         name="password"
                                         label="Password"
                                         type="password"
@@ -172,11 +108,10 @@ export default function Login() {
                                         autoComplete="current-password"
                                         value={values.password}
                                         onChange={handleChange}
+                                        error={authError.password || errors.password ? true : false}
                                     />
                                     {errors.password && <p className='error'>{errors.password}</p>}
                                 </Grid>
-
-
                             </Grid>
 
                             <Grid container justifyContent="center">
@@ -192,7 +127,6 @@ export default function Login() {
                                             Sign In
                                         </Button>
                                 }
-
                             </Grid>
                             <GoogleAuth />
                             <Grid container justifyContent="center">
