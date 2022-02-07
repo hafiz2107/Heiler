@@ -38,11 +38,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function SignUp() {
+export default function SignUp({ person }) {
     const classes = useStyles();
-    
 
-    const { handleChange, values, handleSubmit, errors, loading, emailError } = useForm(validation)
+
+    const { handleChange, values, handleSubmit, errors, loading, emailError } = useForm(validation, person)
 
     return (
         <Container component="main" className="container" maxWidth="lg" >
@@ -57,7 +57,7 @@ export default function SignUp() {
                     <div className={classes.paper} >
                         <img src={logo} className={classes.avatar} alt='Logo' />
                         <Typography component="h1" variant="h5">
-                            Sign up
+                            Sign up {person}
                         </Typography>
                         {emailError && <p style={{ color: "red" }}>{emailError}</p>}
                         <form onSubmit={handleSubmit} className={classes.form} noValidate>
@@ -75,7 +75,7 @@ export default function SignUp() {
                                         autoFocus
                                         value={values.username}
                                         onChange={handleChange}
-                                        
+
                                     />
 
                                     {errors.username && <p className='error'>{errors.username}</p>}
@@ -155,7 +155,7 @@ export default function SignUp() {
                             </Grid>
                             <Grid container justifyContent="center">
                                 <Grid item>
-                                    Already have an account ?<Link style={{ textDecoration: 'none', color: '#00C9B5', fontWeight: '500' }} to='/'> Sign in</Link>
+                                    Already have an account ?<Link style={{ textDecoration: 'none', color: '#00C9B5', fontWeight: '500' }} to={person === 'user' ? '/' : '/doctor'}> Sign in</Link>
                                 </Grid>
                             </Grid>
                         </form>

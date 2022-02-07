@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux'
 import validation from "./validation";
 import { login } from '../../Services/user.service';
+import { doctorLogin } from '../../Services/doctor.service'
 import { makeStyles } from '@material-ui/core/styles';
 
 
-const useForm = () => {
+const useForm = (person) => {
     const useStyles = makeStyles((theme) => ({
         paper: {
             marginTop: theme.spacing(8),
@@ -55,6 +56,7 @@ const useForm = () => {
         })
 
     }
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -66,36 +68,77 @@ const useForm = () => {
             try {
                 setLoading(true)
 
-                login(values).then((result) => {
-                    switch (result.data.message) {
-                        // Success Case
-                        case "Auth successfull":
-                            setLoading(false)
-                            console.log("Redirecting to HOME page");
-                            break;
+                switch (person) {
+                    case 'user': {
+                        login(values).then((result) => {
+                            switch (result.data.message) {
+                                // Success Case
+                                case "Auth successfull":
+                                    setLoading(false)
+                                    console.log("Redirecting to HOME page");
+                                    break;
 
-                        default: return;
+                                default: return;
+                            }
+                        }).catch((errResponse) => {
+                            switch (errResponse.response.data.message) {
+                                case 'Wrong Password':
+                                    setLoading(false)
+                                    setAuthError({
+                                        email: "",
+                                        password: "Wrong Password"
+                                    })
+                                    break;
+                                case "No user found":
+                                    setLoading(false)
+                                    setAuthError({
+                                        password: "",
+                                        email: "Invalid Email"
+                                    })
+                                    break;
+                                default:
+                                    return;
+                            }
+                        })
+                        break;
                     }
-                }).catch((errResponse) => {
-                    switch (errResponse.response.data.message) {
-                        case 'Wrong Password':
-                            setLoading(false)
-                            setAuthError({
-                                email: "",
-                                password: "Wrong Password"
-                            })
-                            break;
-                        case "No user found":
-                            setLoading(false)
-                            setAuthError({
-                                password: "",
-                                email: "Invalid Email"
-                            })
-                            break;
-                        default:
-                            return;
+
+                    case 'doctor': {
+                        doctorLogin(values).then((result) => {
+                            switch (result.data.message) {
+                                // Success Case
+                                case "Auth successfull":
+                                    setLoading(false)
+                                    console.log("Redirecting to HOME page");
+                                    break;
+
+                                default: return;
+                            }
+                        }).catch((errResponse) => {
+                            switch (errResponse.response.data.message) {
+                                case 'Wrong Password':
+                                    setLoading(false)
+                                    setAuthError({
+                                        email: "",
+                                        password: "Wrong Password"
+                                    })
+                                    break;
+                                case "No user found":
+                                    setLoading(false)
+                                    setAuthError({
+                                        password: "",
+                                        email: "Invalid Email"
+                                    })
+                                    break;
+                                default:
+                                    return;
+                            }
+                        })
+                        break;
                     }
-                })
+                    default:
+                        return;
+                }
             } catch (err) {
                 console.log("the error  !!", err)
             }

@@ -45,9 +45,9 @@ const useStyles = makeStyles(theme => ({
 
 
 
-export default function SignUpOtp() {
+export default function SignUpOtp(person) {
 
-    const { handleClick, handleSubmit, authSuccess, setAuthSuccess, otpError, OTP, setOTP, loading, seconds, sendOtpSuccess, verifyLoading } = useForm()
+    const { handleClick, handleDoctorClick, handleSubmit, handleDoctorSubmit, authSuccess, setAuthSuccess, otpError, OTP, setOTP, loading, seconds, sendOtpSuccess, verifyLoading } = useForm(person)
 
     const classes = useStyles();
 
@@ -126,7 +126,7 @@ export default function SignUpOtp() {
                                         !verifyLoading &&
                                         <LoadingButton
                                             onClick={(e) => {
-                                                handleClick()
+                                                person === 'user' ? handleClick() : handleDoctorClick()
                                             }}
                                             endIcon={<SendRounded />}
                                             loading={loading}
@@ -150,7 +150,9 @@ export default function SignUpOtp() {
                                                 color="primary"
                                                 className={classes.submit}
                                                 style={{ backgroundColor: '#6BB8FF' }}
-                                                onClick={handleSubmit}
+                                                onClick={() => {
+                                                    person === 'user' ? handleSubmit() : handleDoctorSubmit()
+                                                }}
                                             >
                                                 Verify
                                             </Button>

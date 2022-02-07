@@ -9,7 +9,6 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Loading } from 'react-loading-dot/lib';
-
 import GoogleAuth from './GoogleAuth';
 import logo from '../Logo/Logo.svg'
 import themeImage from '../Logo/undraw_wishes_icyp 1.svg'
@@ -39,9 +38,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function Login({ person }) {
-    const { values, googleAuthError, authError, errors, loading, handleChange, handleSubmit } = useForm()
-
-    console.log("The person is : ",person)
+    const { values, googleAuthError, authError, errors, loading, handleChange, handleSubmit } = useForm(person)
     const classes = useStyles();
 
     return (
@@ -57,7 +54,7 @@ export default function Login({ person }) {
                     <div className={classes.paper} >
                         <img src={logo} className={classes.avatar} alt='Logo' />
                         <Typography component="h1" variant="h5">
-                            Sign In
+                            Sign In {person}
                         </Typography>
 
                         {/* Showing The password Error  */}
@@ -131,7 +128,7 @@ export default function Login({ person }) {
                             <GoogleAuth />
                             <Grid container justifyContent="center">
                                 <Grid item>
-                                    Don't have an account ? <Link style={{ textDecoration: 'none', color: '#00C9B5', fontWeight: '500' }} to='/signup'>Sign Up</Link>
+                                    Don't have an account ? <Link style={{ textDecoration: 'none', color: '#00C9B5', fontWeight: '500' }} to={person ==='user' ? '/signup' : '/doctorsignup'}>Sign Up</Link>
                                 </Grid>
                             </Grid>
                         </form>

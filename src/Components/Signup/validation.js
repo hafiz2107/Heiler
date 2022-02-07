@@ -1,39 +1,35 @@
-import axios from "axios";
+import { checkDoctorMailExist } from "../../Services/doctor.service";
+import { checkEmailAlreadyExist } from "../../Services/user.service";
 
-const validation = async (values) => {
+
+const validation = async (values, person) => {
     let errors = {};
     let valid = true;
 
 
-    const checkEmailAlreadyExist = () => {
-        return new Promise((resolve, reject) => {
-            try {
-                const config = {
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                }
-                axios.post('http://localhost:5000/user/checkemail', { email: values.email }, { config }).then((result) => {
-                    if (result.status === 204) {
-                        resolve(true)
-                    } else {
-                        reject(false)
-                    }
-                })
-            } catch (err) {
-                console.log("There are errors in email checking", err)
-            }
-        })
+    switch (person) {
+        case 'user': {
+            await checkEmailAlreadyExist(values).then((result) => {
+                errors.emailAlreadyExits = "Email Already exists"
+                valid = false
+            }).catch((noError) => {
+                valid = true
+            })
+            break;
+        }
+        case 'doctor': {
+            await checkDoctorMailExist(values).then((result) => {
+                errors.emailAlreadyExits = "Email Already exists"
+                valid = false
+            }).catch((noError) => {
+                valid = true
+            })
+            break;
+        }
+        default: return;
     }
 
-    await checkEmailAlreadyExist().then((result) => {
-        errors.emailAlreadyExits = "Email Already exists"
-        valid = false
-    }).catch((noError) => {
-        valid = true
-    })
 
-    
     if (!values.username) {
         errors.username = "User Name is required";
         valid = false
@@ -62,7 +58,7 @@ const validation = async (values) => {
         errors.confirmpassword = "The passwords must be same"
         valid = false
     }
-    
+
     return { errors, valid }
 }
 

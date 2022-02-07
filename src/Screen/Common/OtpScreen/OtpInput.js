@@ -1,8 +1,8 @@
 import React from 'react';
 import SignUpOtp from '../../../Components/OTP/SignUpOtp';
 
-const OtpInput = () => {
-  return <SignUpOtp person='doctor'/>;
+const OtpInput = ({ person }) => {
+  return <SignUpOtp person={person} />;
 };
 
 export default OtpInput;

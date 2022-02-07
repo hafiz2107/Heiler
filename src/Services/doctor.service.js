@@ -6,10 +6,10 @@ const config = {
         "Content-Type": "application/json"
     }
 }
-const server = 'http://localhost:5000/user';
+const server = 'http://localhost:5000/doctor';
 
 // Function TO login User
-const login = (values) => {
+const doctorLogin = (values) => {
     return new Promise((resolve, reject) => {
         axios.post(`${server}/login`, { ...values }, { config }).then((response) => {
             // Resolving If the details are true
@@ -21,18 +21,23 @@ const login = (values) => {
     })
 }
 
-// function to handel Google Login
-const handleGoogleLogin = (googleData) => {
+// Function To handle Sign UP
+const doctorSignUp = (values) => {
     return new Promise((resolve, reject) => {
-        axios.post(`${server}/googlelogin`, { token: googleData.tokenId }, { config }).then((response) => {
-            resolve(response)
+        axios.post(`${server}/sendOtp`, { username: values.username, email: values.email, password: values.password }, { config }).then((result) => {
+            if (result.status === 200) {
+                resolve(result)
+            } else if (result.status === 201) {
+                resolve(result)
+            }
         }).catch((err) => {
-            reject(err.response)
+            console.log("The error is : ", err)
+            reject(err)
         })
     })
 }
 
-const checkEmailAlreadyExist = (values) => {
+const checkDoctorMailExist = (values) => {
     return new Promise((resolve, reject) => {
         try {
             axios.post(`${server}/checkemail`, { email: values.email }, { config }).then((result) => {
@@ -48,27 +53,9 @@ const checkEmailAlreadyExist = (values) => {
     })
 }
 
-// Function To handle Sign UP
-const userSignUp = (values) => {
+const sendDoctorOtp = () => {
     return new Promise((resolve, reject) => {
-        axios.post(`${server}/sendOtp`, { username: values.username, email: values.email, password: values.password }, { config }).then((result) => {
-            if (result.status === 200) {
-                resolve(result)
-            } else if (result.status === 201) {
-                resolve(result)
-                // setLoading(false)
-                // setEmailError(result.data.message)
-            }
-        }).catch((err) => {
-            console.log("The error is : ", err)
-            reject(err)
-        })
-    })
-}
-
-const sendOtp = () => {
-    return new Promise((resolve, reject) => {
-        let values = JSON.parse(localStorage.getItem("UserDetails"))
+        let values = JSON.parse(localStorage.getItem("DoctorDetails"))
 
         axios.post(`${server}/sendOtp`, { username: values.username, email: values.email, password: values.password }, { config }).then((result) => {
             resolve(result)
@@ -78,10 +65,10 @@ const sendOtp = () => {
     })
 }
 
-const verifyOtp = (OTP, userId) => {
-
+const verifyDoctorOtp = (OTP, doctorId) => {
+    console.log("IDDD : ", doctorId)
     return new Promise((resolve, reject) => {
-        axios.post(`${server}/verifyotp`, { userId, inputOtp: OTP }, { config }).then((response) => {
+        axios.post(`${server}/verifyotp`, { doctorId, inputOtp: OTP }, { config }).then((response) => {
             if (response.status === 200) {
                 resolve(response)
             }
@@ -92,4 +79,5 @@ const verifyOtp = (OTP, userId) => {
 }
 
 
-export { login, handleGoogleLogin, userSignUp, checkEmailAlreadyExist, sendOtp, verifyOtp }
+
+export { doctorLogin, doctorSignUp, checkDoctorMailExist,sendDoctorOtp, verifyDoctorOtp }
