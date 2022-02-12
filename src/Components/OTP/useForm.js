@@ -29,6 +29,7 @@ const useForm = (person) => {
 
     // Disabling resend OTP button on a click on Resend button
     const handleClick = () => {
+        console.log("@user")
         setLoading(true)
         setTimeout(() => {
             setLoading(false)
@@ -41,7 +42,6 @@ const useForm = (person) => {
 
         // Send Request to resend OTP
         try {
-
             setSendOtp('OTP Succesfully send to you Email')
             setOtpError('')
             setOTP('')
@@ -60,6 +60,7 @@ const useForm = (person) => {
     };
 
     const handleDoctorClick = () => {
+        console.log("@doc")
         setLoading(true)
         setTimeout(() => {
             setLoading(false)
